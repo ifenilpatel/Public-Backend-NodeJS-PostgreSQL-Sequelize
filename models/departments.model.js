@@ -21,10 +21,12 @@ const Department = sequelize.define(
     created_by: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 1,
     },
     updated_by: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 1,
     },
   },
   {
