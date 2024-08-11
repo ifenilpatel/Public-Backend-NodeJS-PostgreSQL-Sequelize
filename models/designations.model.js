@@ -1,5 +1,4 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../configuration/db/dbpool.conf.js");
+const { sequelize, DataTypes } = require("../configuration/db/dbpool.conf.js");
 
 const Department = sequelize.define(
   "Designations",

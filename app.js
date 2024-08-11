@@ -11,8 +11,10 @@ const rateLimit = require("express-rate-limit");
 const { ApiResponse, FLAG, STATUS_CODES, STATUS_MESSAGE } = require("./configuration/utils/ApiResponse.conf.js");
 
 // NOTE: Set environment file.
-const envFile = process.env.NODE_ENV || "development";
-dotenv.config({ path: `./env/.env.${envFile}` });
+// const envFile = process.env.NODE_ENV || "development";
+// dotenv.config({ path: `./env/.env.${envFile}` });
+
+dotenv.config({ path: `.env` });
 
 // NOTE: Set default timezone on system level.
 process.env.TZ = "UTC";

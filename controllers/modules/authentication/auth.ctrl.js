@@ -1,4 +1,4 @@
-const sequelize = require("../../../configuration/db/dbpool.conf.js");
+const { sequelize, Op } = require("../../../configuration/db/dbpool.conf.js");
 
 const { ApiResponse, FLAG, STATUS_CODES, STATUS_MESSAGE } = require("../../../configuration/utils/ApiResponse.conf.js");
 const { currentDate, randomNumber } = require("../../../configuration/utils/Common.conf.js");
@@ -12,17 +12,33 @@ const fun_Register_User = async (req, res) => {
   const t = await sequelize.transaction();
   try {
     const { first_name = "", last_name = "", email_id = "", mobile = "", password = "", user_type = "User", is_active = true } = req.body;
+    // use array some.
     if (first_name == "" || last_name == "" || email_id == "" || mobile == "" || password == "") {
       let pera = [
         {
-          first_name: first_name,
-          last_name: last_name,
-          email_id: email_id,
-          mobile: mobile,
-          password: password,
+          first_name,
+          last_name,
+          email_id,
+          mobile,
+          password,
         },
       ];
       return res.json(new ApiResponse(FLAG.FAIL, STATUS_CODES.NEED_PARAM, STATUS_MESSAGE.NEED_PARAM, pera));
+    }
+
+    const existingUser = await User.findAll({
+      where: {
+        [Op.or]: [{ email_id }, { mobile }],
+      },
+    });
+
+    if (existingUser.length != 0) {
+      if (existingUser[0].email_id == email_id) {
+        return res.json(new ApiResponse(FLAG.FAIL, STATUS_CODES.EXIST_DATA, "Email is already exist.", []));
+      }
+      if (existingUser[0].mobile == mobile) {
+        return res.json(new ApiResponse(FLAG.FAIL, STATUS_CODES.EXIST_DATA, "Mobile is already exist.", []));
+      }
     }
 
     const opt_number = randomNumber(4);
@@ -113,7 +129,7 @@ const fun_Signin = async (req, res) => {
     }
 
     if (result.is_email_verified == false) {
-      return res.json(new ApiResponse(FLAG.FAIL, STATUS_CODES.VERIFICATION_FLAG_EMAIL, STATUS_MESSAGE.VERIFICATION_FLAG_EMAIL, user_data));
+      return res.json(new ApiResponse(FLAG.FAIL, STATUS_CODES.VERIFICATION_FLAG_EMAIL, STATUS_MESSAGE.VERIFICATION_FLAG_EMAIL, []));
     }
 
     // Generate token
@@ -135,7 +151,7 @@ const fun_Signin = async (req, res) => {
       },
     ];
 
-    return res.json(new ApiResponse(FLAG.FAIL, STATUS_CODES.SUCCESS, STATUS_MESSAGE.SUCCESS, user_data));
+    return res.json(new ApiResponse(FLAG.SUCCESS, STATUS_CODES.SUCCESS, "login successfully", user_data));
   } catch (err) {
     if (process.env.CODE_LOGS == "true") {
       console.error(`Error: `, err);
@@ -173,7 +189,7 @@ const fun_Send_Email_OTP = async (req, res) => {
       return res.json(new ApiResponse(FLAG.FAIL, STATUS_CODES.VERIFICATION_ERROR, "Failed to send OTP, Please try again after sometime.", []));
     }
     await t.commit();
-    return res.json(new ApiResponse(FLAG.FAIL, STATUS_CODES.SUCCESS, "Email sent succussfully.", []));
+    return res.json(new ApiResponse(FLAG.SUCCESS, STATUS_CODES.SUCCESS, "Email sent succussfully.", []));
   } catch (err) {
     await t.rollback();
     if (process.env.CODE_LOGS == "true") {
@@ -233,7 +249,7 @@ const fun_Forgot_Password = async (req, res) => {
     let token = {
       user_id: result.user_id,
       token_created_at: currentDate(),
-      time: 10,
+      time: 5,
     };
 
     let encrypt_token = generateToken(token);
@@ -243,7 +259,7 @@ const fun_Forgot_Password = async (req, res) => {
     if (!email_status) {
       return res.json(new ApiResponse(FLAG.FAIL, STATUS_CODES.VERIFICATION_ERROR, "Failed to send OTP, Please try again after sometime.", []));
     }
-    return res.json(new ApiResponse(FLAG.FAIL, STATUS_CODES.SUCCESS, "Email sent succussfully.", []));
+    return res.json(new ApiResponse(FLAG.SUCCESS, STATUS_CODES.SUCCESS, "Email sent succussfully.", []));
   } catch (err) {
     await t.rollback();
     if (process.env.CODE_LOGS == "true") {

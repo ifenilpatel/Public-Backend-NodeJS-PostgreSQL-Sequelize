@@ -1,4 +1,4 @@
-const { Sequelize } = require("sequelize");
+const { Sequelize, DataTypes, Op } = require("sequelize");
 
 const sequelize = new Sequelize(process.env.DATABASE_TITLE, process.env.DATABASE_USER, process.env.DATABASE_PASSWORD, {
   host: process.env.DATABASE_HOST,
@@ -16,12 +16,12 @@ sequelize
   .authenticate()
   .then(() => {
     console.log("Connection to the database has been established successfully.");
-    // sequelize.sync({ force: true }).then(() => {
-    //   console.log("Database synced");
-    // });
+    sequelize.sync({ force: true }).then(() => {
+      console.log("Database synced");
+    });
   })
   .catch((err) => {
     console.error("Unable to connect to the database:", err);
   });
 
-module.exports = sequelize;
+module.exports = { sequelize, Sequelize, DataTypes, Op };

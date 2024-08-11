@@ -8,6 +8,9 @@ const auth = (req, res, next) => {
   let authorization = req.headers.authorization || "";
   let result = verifyToken(authorization);
 
+  if (!result) {
+    return res.json(new ApiResponse(FLAG.FAIL, STATUS_CODES.UNAUTHORIZED, STATUS_MESSAGE.UNAUTHORIZED, []));
+  }
   let startTime = convertToDateTime(result.token_created_at);
   let endTime = convertToDateTime(todayDate);
 
