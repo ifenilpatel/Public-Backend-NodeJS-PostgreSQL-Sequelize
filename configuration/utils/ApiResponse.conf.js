@@ -13,6 +13,10 @@ const STATUS_CODES = {
   UNAUTHORIZED: 601,
   ROUTE_NOT_FOUND: 901,
   LIMIT_EXHAUSTED: 501,
+  VERIFICATION_FLAG_EMAIL: 701,
+  VERIFICATION_FLAG_MOBILE: 702,
+  TIMEOUT: 703,
+  VERIFICATION_ERROR: 704,
 };
 
 const STATUS_MESSAGE = {
@@ -28,6 +32,9 @@ const STATUS_MESSAGE = {
   UNAUTHORIZED: "You do not have access!",
   ROUTE_NOT_FOUND: "try again, route not found!",
   LIMIT_EXHAUSTED: "Too many requests, please try again later.",
+  VERIFICATION_FLAG_EMAIL: "Please verify email!",
+  VERIFICATION_FLAG_MOBILE: "Please verify mobile!",
+  TIMEOUT: "Timeout!",
 };
 
 class ApiResponse {

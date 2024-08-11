@@ -43,10 +43,16 @@ app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
 
 // NOTE: Set routers for third party.
 const indexRoute = require("./routers/index.js");
-const departmentsRoute = require("./routers/departments.js");
+const authRoute = require("./routers/authentication/auth.js");
+const userRoute = require("./routers/master/users.js");
+const departmentRoute = require("./routers/master/departments.js");
+const designationRoute = require("./routers/master/designations.js");
 
 app.use("/", indexRoute);
-app.use("/api/v1/departments", departmentsRoute);
+app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/users", userRoute);
+app.use("/api/v1/departments", departmentRoute);
+app.use("/api/v1/designations", designationRoute);
 
 // NOTE: Default route handler.
 app.use((req, res, next) => {

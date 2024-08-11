@@ -1,15 +1,15 @@
-const sequelize = require("../configuration/db/dbpool.conf.js");
+const sequelize = require("../../../configuration/db/dbpool.conf.js");
 
-const { ApiResponse, FLAG, STATUS_CODES, STATUS_MESSAGE } = require("../configuration/utils/ApiResponse.conf.js");
+const { ApiResponse, FLAG, STATUS_CODES, STATUS_MESSAGE } = require("../../../configuration/utils/ApiResponse.conf.js");
 
-const { PAGINATION_INPUT } = require("../configuration/utils/Constant.conf.js");
+const { PAGINATION_INPUT } = require("../../../configuration/utils/Constant.conf.js");
 
-const Department = require("../models/departments.model.js");
+const Department = require("../../../models/departments.model.js");
 
 const fun_SelectById = async (req, res) => {
   try {
-    const departmentId = req.body.departmentId || 0;
-    const result = await Department.findOne({ where: { departmentId: departmentId } });
+    const department_id = req.body.department_id || 0;
+    const result = await Department.findOne({ where: { department_id: department_id } });
     if (!result) {
       return res.json(new ApiResponse(FLAG.FAIL, STATUS_CODES.NO_DATA, STATUS_MESSAGE.NO_DATA, []));
     } else {
@@ -55,8 +55,8 @@ const fun_SelectAll = async (req, res) => {
 
 const fun_DeleteById = async (req, res) => {
   try {
-    const departmentId = req.body.departmentId || 0;
-    const result = await Department.destroy({ where: { departmentId: departmentId } });
+    const department_id = req.body.department_id || 0;
+    const result = await Department.destroy({ where: { department_id: department_id } });
     if (!result) {
       return res.json(new ApiResponse(FLAG.FAIL, STATUS_CODES.NO_DATA, STATUS_MESSAGE.NO_DATA, []));
     }
@@ -71,8 +71,8 @@ const fun_DeleteById = async (req, res) => {
 
 const fun_Insert = async (req, res) => {
   try {
-    const { title, isActive, createdBy } = req.body;
-    const result = await Department.create({ title, isActive, createdBy });
+    const { title, is_active, created_by } = req.body;
+    const result = await Department.create({ title, is_active, created_by });
     return res.json(new ApiResponse(FLAG.SUCCESS, STATUS_CODES.SUCCESS, STATUS_MESSAGE.INSERT, result));
   } catch (err) {
     if (process.env.CODE_LOGS == "true") {
@@ -84,11 +84,11 @@ const fun_Insert = async (req, res) => {
 
 const fun_Update = async (req, res) => {
   try {
-    const { departmentId, title, isActive, createdBy } = req.body;
+    const { department_id, title, is_active, created_by } = req.body;
     const [result] = await Department.update(
-      { title, isActive, createdBy },
+      { title, is_active, created_by },
       {
-        where: { departmentId },
+        where: { department_id },
       }
     );
     if (!result) {
@@ -105,10 +105,10 @@ const fun_Update = async (req, res) => {
 
 const fun_RowSelectById = async (req, res) => {
   try {
-    const departmentId = req.body.departmentId || 1;
+    const department_id = req.body.department_id || 1;
 
-    const [results] = await sequelize.query(`SELECT * FROM tbldepartments WHERE departmentId = :departmentId`, {
-      replacements: { departmentId },
+    const [results] = await sequelize.query(`SELECT * FROM tbldepartments WHERE department_id = :department_id`, {
+      replacements: { department_id },
       type: sequelize.QueryTypes.SELECT,
     });
 
@@ -128,8 +128,8 @@ const fun_RowSelectById = async (req, res) => {
 const fun_PerformTransactionInsert = async (req, res) => {
   const t = await sequelize.transaction();
   try {
-    const { title, isActive, createdBy } = req.body;
-    const result = await Department.create({ title, isActive, createdBy }, { transaction: t });
+    const { title, is_active, created_by } = req.body;
+    const result = await Department.create({ title, is_active, created_by }, { transaction: t });
     await t.commit();
     return res.json(new ApiResponse(FLAG.SUCCESS, STATUS_CODES.SUCCESS, STATUS_MESSAGE.INSERT, result));
   } catch (err) {
@@ -144,11 +144,11 @@ const fun_PerformTransactionInsert = async (req, res) => {
 const fun_PerformTransactionUpdate = async (req, res) => {
   const t = await sequelize.transaction();
   try {
-    const { departmentId, title, isActive, createdBy } = req.body;
+    const { department_id, title, is_active, created_by } = req.body;
     const [result] = await Department.update(
-      { title, isActive, createdBy },
+      { title, is_active, created_by },
       {
-        where: { departmentId },
+        where: { department_id },
         transaction: t,
       }
     );

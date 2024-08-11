@@ -4,9 +4,7 @@ const crypto = require("crypto");
 
 // Generate JWT token
 const generateToken = (payload) => {
-  const options = {
-    expiresIn: "1d", // Token expires in 1 day
-  };
+  const options = {};
   const token = jwt.sign(payload, process.env.JWT_SECRET, options);
   return token;
 };
@@ -77,6 +75,12 @@ const decodeString = (text) => {
   }
 };
 
+// Generate Key
+const generateKey = () => {
+  const token = crypto.randomBytes(16).toString("hex");
+  return token;
+};
+
 module.exports = {
   generateToken,
   verifyToken,
@@ -84,4 +88,5 @@ module.exports = {
   comparePasswords,
   encodeString,
   decodeString,
+  generateKey,
 };

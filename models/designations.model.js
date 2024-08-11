@@ -2,9 +2,9 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../configuration/db/dbpool.conf.js");
 
 const Department = sequelize.define(
-  "Departments",
+  "Designations",
   {
-    department_id: {
+    designation_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
@@ -29,7 +29,7 @@ const Department = sequelize.define(
     },
   },
   {
-    tableName: "tbl_departments",
+    tableName: "tbl_designations",
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",
